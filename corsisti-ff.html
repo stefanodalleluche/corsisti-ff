@@ -623,8 +623,11 @@
         </select>
       </div>
       <div class="filter-row">
-        <select id="specFilter">
-          <option value="">Tutte le specializzazioni</option>
+        <select id="percorsoFilter">
+          <option value="">Tutti i percorsi</option>
+          <option value="Lunedì">Lunedì</option>
+          <option value="Mercoledì">Mercoledì</option>
+          <option value="Giovedì">Giovedì</option>
         </select>
       </div>
       <div class="filter-row">
@@ -633,12 +636,6 @@
           <span class="chip active" data-studio="all">Tutti</span>
           <span class="chip" data-studio="si">Con studio</span>
           <span class="chip" data-studio="no">Senza studio</span>
-        </div>
-      </div>
-      <div class="filter-row">
-        <div class="filter-chips">
-          <span class="chip active" data-collab="all">Tutti</span>
-          <span class="chip" data-collab="si">Disponibili a collaborare</span>
         </div>
       </div>
     </div>
@@ -650,16 +647,16 @@
 <script>
 const GEOCODE_CACHE = {};
 const DEMO_DATA = [
-  { nome:"Marco Bianchi", email:"marco@email.it", regione:"Lombardia", provincia:"Milano", comune:"Milano", studio:"Sì", mq:"40", sfondi:"Grigio, nero, bianco", luci:"Flash Godox", ciclorama:"No", ospita:"Sì", spec:"Ritratto, Corporate", collab:"Sì", anno:"2022", note:"Studio a Navigli" },
-  { nome:"Laura Rossi", email:"laura@email.it", regione:"Toscana", provincia:"Firenze", comune:"Firenze", studio:"Sì", mq:"25", sfondi:"Bianco, carta da zucchero", luci:"Luce continua", ciclorama:"No", ospita:"No", spec:"Matrimonio, Famiglia", collab:"Sì", anno:"2023", note:"" },
-  { nome:"Giulia Ferri", email:"giulia@email.it", regione:"Lazio", provincia:"Roma", comune:"Roma", studio:"No", mq:"", sfondi:"", luci:"", ciclorama:"", ospita:"", spec:"Moda, Editorial", collab:"Sì", anno:"2021", note:"" },
-  { nome:"Andrea Conti", email:"andrea@email.it", regione:"Piemonte", provincia:"Torino", comune:"Torino", studio:"Sì", mq:"60", sfondi:"Corten, bianco, carta", luci:"Flash Profoto", ciclorama:"Sì", ospita:"Sì", spec:"Corporate, Industriale", collab:"Sì", anno:"2022", note:"Ciclorama 4m" },
-  { nome:"Sofia Martini", email:"sofia@email.it", regione:"Veneto", provincia:"Venezia", comune:"Venezia", studio:"No", mq:"", sfondi:"", luci:"", ciclorama:"", ospita:"", spec:"Reportage, Travel", collab:"No", anno:"2023", note:"" },
-  { nome:"Luca Russo", email:"luca@email.it", regione:"Campania", provincia:"Napoli", comune:"Napoli", studio:"Sì", mq:"30", sfondi:"Bianco, texture", luci:"Flash Broncolor", ciclorama:"No", ospita:"Sì", spec:"Ritratto, Moda", collab:"Sì", anno:"2021", note:"" },
-  { nome:"Elena Gallo", email:"elena@email.it", regione:"Emilia-Romagna", provincia:"Bologna", comune:"Bologna", studio:"No", mq:"", sfondi:"", luci:"", ciclorama:"", ospita:"", spec:"Food, Still life", collab:"Sì", anno:"2022", note:"" },
-  { nome:"Francesco Mori", email:"fmori@email.it", regione:"Sicilia", provincia:"Palermo", comune:"Palermo", studio:"Sì", mq:"35", sfondi:"Bianco, nero", luci:"Flash Elinchrom", ciclorama:"No", ospita:"No", spec:"Ritratto, Matrimonio", collab:"No", anno:"2023", note:"" },
-  { nome:"Anna Costa", email:"anna@email.it", regione:"Toscana", provincia:"Livorno", comune:"Livorno", studio:"No", mq:"", sfondi:"", luci:"", ciclorama:"", ospita:"", spec:"Ritratto, Famiglia", collab:"Sì", anno:"2022", note:"" },
-  { nome:"Roberto Esposito", email:"rob@email.it", regione:"Liguria", provincia:"Genova", comune:"Genova", studio:"Sì", mq:"20", sfondi:"Bianco", luci:"Godox AD400", ciclorama:"No", ospita:"Sì", spec:"Matrimonio, Corporate", collab:"Sì", anno:"2021", note:"" },
+  { nome:"Marco Bianchi", email:"marco@email.it", regione:"Lombardia", provincia:"Milano", comune:"Milano", percorso:"Lunedì", studio:"Si", mq:"40", note:"Studio a Navigli, sfondo bianco e nero, flash Godox" },
+  { nome:"Laura Rossi", email:"laura@email.it", regione:"Toscana", provincia:"Firenze", comune:"Firenze", percorso:"Mercoledì", studio:"Si", mq:"25", note:"Luce continua, sfondi chiari" },
+  { nome:"Giulia Ferri", email:"giulia@email.it", regione:"Lazio", provincia:"Roma", comune:"Roma", percorso:"Giovedì", studio:"No", mq:"", note:"" },
+  { nome:"Andrea Conti", email:"andrea@email.it", regione:"Piemonte", provincia:"Torino", comune:"Torino", percorso:"Lunedì, Mercoledì", studio:"Si", mq:"60", note:"Ciclorama 4m, flash Profoto, sfondi Corten e bianco" },
+  { nome:"Sofia Martini", email:"sofia@email.it", regione:"Veneto", provincia:"Venezia", comune:"Venezia", percorso:"Mercoledì", studio:"No", mq:"", note:"" },
+  { nome:"Luca Russo", email:"luca@email.it", regione:"Campania", provincia:"Napoli", comune:"Napoli", percorso:"Giovedì", studio:"Studio Condiviso", mq:"30", note:"Flash Broncolor, sfondi bianchi e texture" },
+  { nome:"Elena Gallo", email:"elena@email.it", regione:"Emilia-Romagna", provincia:"Bologna", comune:"Bologna", percorso:"Lunedì", studio:"No", mq:"", note:"" },
+  { nome:"Francesco Mori", email:"fmori@email.it", regione:"Sicilia", provincia:"Palermo", comune:"Palermo", percorso:"Mercoledì", studio:"Si", mq:"35", note:"Flash Elinchrom, sfondi bianco e nero" },
+  { nome:"Anna Costa", email:"anna@email.it", regione:"Toscana", provincia:"Livorno", comune:"Livorno", percorso:"Giovedì", studio:"No", mq:"", note:"" },
+  { nome:"Roberto Esposito", email:"rob@email.it", regione:"Liguria", provincia:"Genova", comune:"Genova", percorso:"Lunedì", studio:"Studio Condiviso", mq:"20", note:"Godox AD400, sfondo bianco" },
 ];
 
 const CITY_COORDS = {
@@ -695,16 +692,10 @@ const COL = {
   regione: 'Regione',
   provincia: 'Provincia',
   comune: 'Comune',
-  studio: 'Hai uno studio fotografico?',
-  mq: 'Superficie (mq)',
-  sfondi: 'Sfondi disponibili',
-  luci: 'Attrezzatura luci',
-  ciclorama: 'Ciclorama',
-  ospita: 'Disponibile ad ospitare colleghi?',
-  spec: 'Specializzazione',
-  collab: 'Disponibile a collaborazioni?',
-  anno: 'Anno iscrizione',
-  note: 'Note sullo studio',
+  percorso: 'Che percorso frequenti?',
+  studio: 'Possiedi uno studio fotografico',
+  mq: 'Superficie',
+  note: 'Descrizione e allestimento',
 };
 
 function initMap() {
@@ -755,20 +746,19 @@ async function geocode(comune, provincia, regione) {
 }
 
 function buildPopup(d) {
-  const hasStudio = d.studio && d.studio.toLowerCase().startsWith('s');
+  const hasStudio = d.studio && d.studio.toLowerCase() !== 'no';
   let html = `<div class="popup-inner">
     <div class="popup-name">${d.nome}</div>
     <div class="popup-location">📍 ${[d.comune, d.provincia, d.regione].filter(Boolean).join(', ')}</div>`;
-  if (d.email) html += `<div class="popup-divider"></div><div class="popup-row"><span class="popup-row-label">Email</span><span class="popup-row-val">${d.email}</span></div>`;
-  if (d.spec) html += `<div class="popup-row"><span class="popup-row-label">Spec.</span><span class="popup-row-val">${d.spec}</span></div>`;
-  if (d.collab) html += `<div class="popup-row"><span class="popup-row-label">Collab.</span><span class="popup-row-val">${d.collab}</span></div>`;
-  if (d.anno) html += `<div class="popup-row"><span class="popup-row-label">Anno</span><span class="popup-row-val">${d.anno}</span></div>`;
+  html += `<div class="popup-divider"></div>`;
+  if (d.email) html += `<div class="popup-row"><span class="popup-row-label">Email</span><span class="popup-row-val">${d.email}</span></div>`;
+  if (d.percorso) html += `<div class="popup-row"><span class="popup-row-label">Percorso</span><span class="popup-row-val">${d.percorso}</span></div>`;
   html += `</div>`;
   if (hasStudio) {
-    html += `<div class="popup-studio-header"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg> Studio fotografico`;
-    const details = [d.mq?`${d.mq} mq`:'', d.sfondi, d.luci, d.ciclorama&&d.ciclorama.toLowerCase().startsWith('s')?'Ciclorama':''].filter(Boolean);
-    if (details.length) html += ` · ${details.join(' · ')}`;
+    html += `<div class="popup-studio-header"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg> ${d.studio}`;
+    if (d.mq) html += ` · ${d.mq} mq`;
     html += `</div>`;
+    if (d.note) html += `<div style="padding:0.6rem 1rem;font-size:0.78rem;color:var(--text-muted);border-top:1px solid var(--border)">${d.note}</div>`;
   }
   return html;
 }
@@ -830,27 +820,23 @@ function updateStats(data) {
 
 function populateFilters(data) {
   const regioni = [...new Set(data.map(d=>d.regione).filter(Boolean))].sort();
-  const specs = [...new Set(data.flatMap(d => d.spec ? d.spec.split(',').map(s=>s.trim()) : []).filter(Boolean))].sort();
   const rSel = document.getElementById('regioneFilter');
-  const sSel = document.getElementById('specFilter');
   regioni.forEach(r => { const o = document.createElement('option'); o.value=r; o.textContent=r; rSel.appendChild(o); });
-  specs.forEach(s => { const o = document.createElement('option'); o.value=s; o.textContent=s; sSel.appendChild(o); });
 }
 
-let studioFilter = 'all', collabFilter = 'all';
+let studioFilter = 'all';
 
 function applyFilters() {
   const search = document.getElementById('searchInput').value.toLowerCase();
   const regione = document.getElementById('regioneFilter').value;
-  const spec = document.getElementById('specFilter').value;
+  const percorso = document.getElementById('percorsoFilter').value;
   filtered = allData.filter(d => {
     const text = `${d.nome} ${d.comune} ${d.provincia}`.toLowerCase();
     if (search && !text.includes(search)) return false;
     if (regione && d.regione !== regione) return false;
-    if (spec && (!d.spec || !d.spec.includes(spec))) return false;
-    if (studioFilter === 'si' && !(d.studio && d.studio.toLowerCase().startsWith('s'))) return false;
-    if (studioFilter === 'no' && (d.studio && d.studio.toLowerCase().startsWith('s'))) return false;
-    if (collabFilter === 'si' && !(d.collab && d.collab.toLowerCase().startsWith('s'))) return false;
+    if (percorso && (!d.percorso || !d.percorso.includes(percorso))) return false;
+    if (studioFilter === 'si' && !(d.studio && d.studio.toLowerCase() !== 'no')) return false;
+    if (studioFilter === 'no' && (d.studio && d.studio.toLowerCase() !== 'no')) return false;
     return true;
   });
   renderCards(filtered);
@@ -878,15 +864,9 @@ async function loadFromSheet(id, name) {
     regione: getVal(row, COL.regione),
     provincia: getVal(row, COL.provincia),
     comune: getVal(row, COL.comune),
+    percorso: getVal(row, COL.percorso),
     studio: getVal(row, COL.studio),
     mq: getVal(row, COL.mq),
-    sfondi: getVal(row, COL.sfondi),
-    luci: getVal(row, COL.luci),
-    ciclorama: getVal(row, COL.ciclorama),
-    ospita: getVal(row, COL.ospita),
-    spec: getVal(row, COL.spec),
-    collab: getVal(row, COL.collab),
-    anno: getVal(row, COL.anno),
     note: getVal(row, COL.note),
   })).filter(d => d.nome);
 }
@@ -941,21 +921,13 @@ document.getElementById('settingsBtn').addEventListener('click', () => {
 
 document.getElementById('searchInput').addEventListener('input', applyFilters);
 document.getElementById('regioneFilter').addEventListener('change', applyFilters);
-document.getElementById('specFilter').addEventListener('change', applyFilters);
+document.getElementById('percorsoFilter').addEventListener('change', applyFilters);
 
 document.querySelectorAll('[data-studio]').forEach(chip => {
   chip.addEventListener('click', () => {
     document.querySelectorAll('[data-studio]').forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
     studioFilter = chip.dataset.studio;
-    applyFilters();
-  });
-});
-document.querySelectorAll('[data-collab]').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('[data-collab]').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    collabFilter = chip.dataset.collab;
     applyFilters();
   });
 });
