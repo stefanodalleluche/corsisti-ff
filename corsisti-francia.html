@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corsisti Francesco Francia — Mappa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --border: #e8e4dc;
+    --text: #1a1814;
+    --text-muted: #7a756a;
+    --accent: #c8602a;
+    --accent-light: #f5ede6;
+    --accent-dark: #9e4a1e;
+    --green: #3b6d11;
+    --green-light: #eaf3de;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .logo-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .logo-text p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+  .header-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    border: 1px solid transparent;
+  }
+  .btn-outline {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text);
+  }
+  .btn-outline:hover { background: var(--bg); border-color: var(--text-muted); }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--accent-dark); }
+  .btn svg { width: 15px; height: 15px; }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .stat-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border);
+  }
+
+  /* LAYOUT */
+  .app-body {
+    display: flex;
+    height: calc(100vh - 110px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 340px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .sidebar-filters {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .filter-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .filter-row {
+    margin-bottom: 0.6rem;
+  }
+  .filter-row:last-child { margin-bottom: 0; }
+  select, input[type="text"] {
+    width: 100%;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.83rem;
+    color: var(--text);
+    appearance: none;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  select:focus, input[type="text"]:focus {
+    border-color: var(--accent);
+  }
+  .search-wrap { position: relative; }
+  .search-wrap svg {
+    position: absolute;
+    left: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+  .search-wrap input { padding-left: 2rem; }
+  .filter-chips {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  .chip {
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+  .chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .chip:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+  /* CARDS LIST */
+  .cards-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.75rem;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+  .card.selected { border-color: var(--accent); background: var(--accent-light); }
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+  .card-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .card-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    flex: 1;
+  }
+  .card-location {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.25rem;
+  }
+  .card-location svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .badge-studio {
+    background: var(--green-light);
+    color: var(--green);
+  }
+  .badge-studio svg { width: 10px; height: 10px; }
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+  }
+  .tag {
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  /* MAP */
+  #map {
+    flex: 1;
+    z-index: 1;
+  }
+
+  /* POPUP */
+  .leaflet-popup-content-wrapper {
+    border-radius: 10px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12) !important;
+    border: 1px solid var(--border) !important;
+    padding: 0 !important;
+    overflow: hidden;
+  }
+  .leaflet-popup-content { margin: 0 !important; width: 260px !important; }
+  .popup-inner { padding: 1rem; }
+  .popup-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
+  .popup-location {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+  .popup-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0.6rem 0;
+  }
+  .popup-row {
+    display: flex;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    margin-bottom: 0.35rem;
+    align-items: flex-start;
+  }
+  .popup-row-label {
+    color: var(--text-muted);
+    min-width: 70px;
+    flex-shrink: 0;
+  }
+  .popup-row-val { color: var(--text); }
+  .popup-studio-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--green);
+    padding: 0.5rem 1rem;
+    background: var(--green-light);
+    border-top: 1px solid var(--border);
+  }
+  .popup-studio-header svg { width: 13px; height: 13px; }
+
+  /* DETAIL PANEL (mobile / click) */
+  .detail-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    padding: 1.25rem 1.5rem 2rem;
+    z-index: 2000;
+    display: none;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .detail-panel.open { display: block; }
+  .detail-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  /* LOADING */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    gap: 1rem;
+  }
+  .loading-overlay.hidden { display: none; }
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-family: 'Playfair Display', serif;
+  }
+
+  /* CONFIG MODAL */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .modal-backdrop.hidden { display: none; }
+  .modal {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1.75rem;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+  }
+  .modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  .modal p {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+  }
+  .modal label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .modal input {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+  }
+  .modal input:focus { border-color: var(--accent); }
+  .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+  .modal-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.85rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+  .modal-note strong { color: var(--text); }
+
+  /* ERROR */
+  .error-banner {
+    background: #fff5f5;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.82rem;
+    display: none;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+  }
+  .error-banner.visible { display: block; }
+
+  /* DEMO BANNER */
+  .demo-banner {
+    background: #fffbeb;
+    border-bottom: 1px solid #fde68a;
+    padding: 0.5rem 2rem;
+    font-size: 0.78rem;
+    color: #92400e;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .demo-banner.hidden { display: none; }
+  .demo-banner a { color: var(--accent); text-decoration: underline; cursor: pointer; }
+
+  /* NO DATA */
+  .no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 2rem;
+  }
+  .no-data svg { width: 40px; height: 40px; opacity: 0.3; }
+
+  @media (max-width: 700px) {
+    .sidebar { display: none; }
+    .app-body { height: calc(100vh - 90px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p class="loading-text">Caricamento corsisti...</p>
+</div>
+
+<!-- CONFIG MODAL -->
+<div class="modal-backdrop" id="configModal">
+  <div class="modal">
+    <h2>Configura il tuo Google Sheet</h2>
+    <p>Inserisci l'ID del Google Sheet che riceve le risposte dal tuo Google Form. Lo trovi nell'URL del foglio: <code>docs.google.com/spreadsheets/d/<strong>[ID QUI]</strong>/edit</code></p>
+    <div class="error-banner" id="sheetError">Impossibile caricare il foglio. Controlla che sia pubblico in lettura e che l'ID sia corretto.</div>
+    <label for="sheetIdInput">ID Google Sheet</label>
+    <input type="text" id="sheetIdInput" placeholder="es. 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms" />
+    <div class="modal-note">
+      <strong>Come rendere il foglio pubblico:</strong> Apri il foglio → Condividi → "Chiunque abbia il link" → Visualizzatore → Copia link
+    </div>
+    <label for="sheetNameInput">Nome del foglio (tab)</label>
+    <input type="text" id="sheetNameInput" placeholder="es. Risposte al modulo 1" value="Risposte al modulo 1"/>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="useDemoBtn">Usa dati demo</button>
+      <button class="btn btn-primary" id="loadSheetBtn">Carica dati</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO BANNER -->
+<div class="demo-banner" id="demoBanner">
+  <span>⚠ Stai visualizzando <strong>dati dimostrativi</strong>. <a id="configureLink">Configura il tuo Google Sheet</a> per vedere i dati reali.</span>
+  <button onclick="document.getElementById('demoBanner').classList.add('hidden')" style="background:none;border:none;cursor:pointer;font-size:1rem;color:#92400e;">✕</button>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">FF</div>
+    <div class="logo-text">
+      <h1>Corsisti Francesco Francia</h1>
+      <p>Rete fotografica — Mappa interattiva</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-outline" id="settingsBtn">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Configura Sheet
+    </button>
+    <a class="btn btn-primary" id="formLink" href="#" target="_blank">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      Registrati
+    </a>
+  </div>
+</header>
+
+<div class="stats-bar" id="statsBar">
+  <div class="stat"><span class="stat-num" id="statTot">—</span><span class="stat-label">corsisti totali</span></div>
+  <div class="stat-divider"></div>
+  <div class="stat"><span class="stat-num" id="statStudio">—</span><span class="stat-label">con studio</span></div>
+  <div class="stat-divider"></div>
+  <div class="stat"><span class="stat-num" id="statRegioni">—</span><span class="stat-label">regioni</span></div>
+  <div class="stat-divider"></div>
+  <div class="stat"><span class="stat-num" id="statCollab">—</span><span class="stat-label">disponibili a collaborare</span></div>
+</div>
+
+<div class="app-body">
+  <aside class="sidebar">
+    <div class="sidebar-filters">
+      <div class="filter-label">Cerca</div>
+      <div class="filter-row search-wrap">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="searchInput" placeholder="Nome, città..."/>
+      </div>
+      <div class="filter-row">
+        <select id="regioneFilter">
+          <option value="">Tutte le regioni</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <select id="specFilter">
+          <option value="">Tutte le specializzazioni</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <div class="filter-label" style="margin-bottom:0.4rem">Studio fotografico</div>
+        <div class="filter-chips">
+          <span class="chip active" data-studio="all">Tutti</span>
+          <span class="chip" data-studio="si">Con studio</span>
+          <span class="chip" data-studio="no">Senza studio</span>
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-chips">
+          <span class="chip active" data-collab="all">Tutti</span>
+          <span class="chip" data-collab="si">Disponibili a collaborare</span>
+        </div>
+      </div>
+    </div>
+    <div class="cards-list" id="cardsList"></div>
+  </aside>
+  <div id="map"></div>
+</div>
+
+<script>
+const GEOCODE_CACHE = {};
+const DEMO_DATA = [
+  { nome:"Marco Bianchi", email:"marco@email.it", regione:"Lombardia", provincia:"Milano", comune:"Milano", studio:"Sì", mq:"40", sfondi:"Grigio, nero, bianco", luci:"Flash Godox", ciclorama:"No", ospita:"Sì", spec:"Ritratto, Corporate", collab:"Sì", anno:"2022", note:"Studio a Navigli" },
+  { nome:"Laura Rossi", email:"laura@email.it", regione:"Toscana", provincia:"Firenze", comune:"Firenze", studio:"Sì", mq:"25", sfondi:"Bianco, carta da zucchero", luci:"Luce continua", ciclorama:"No", ospita:"No", spec:"Matrimonio, Famiglia", collab:"Sì", anno:"2023", note:"" },
+  { nome:"Giulia Ferri", email:"giulia@email.it", regione:"Lazio", provincia:"Roma", comune:"Roma", studio:"No", mq:"", sfondi:"", luci:"", ciclorama:"", ospita:"", spec:"Moda, Editorial", collab:"Sì", anno:"2021", note:"" },
+  { nome:"Andrea Conti", email:"andrea@email.it", regione:"Piemonte", provincia:"Torino", comune:"Torino", studio:"Sì", mq:"60", sfondi:"Corten, bianco, carta", luci:"Flash Profoto", ciclorama:"Sì", ospita:"Sì", spec:"Corporate, Industriale", collab:"Sì", anno:"2022", note:"Ciclorama 4m" },
+  { nome:"Sofia Martini", email:"sofia@email.it", regione:"Veneto", provincia:"Venezia", comune:"Venezia", studio:"No", mq:"", sfondi:"", luci:"", ciclorama:"", ospita:"", spec:"Reportage, Travel", collab:"No", anno:"2023", note:"" },
+  { nome:"Luca Russo", email:"luca@email.it", regione:"Campania", provincia:"Napoli", comune:"Napoli", studio:"Sì", mq:"30", sfondi:"Bianco, texture", luci:"Flash Broncolor", ciclorama:"No", ospita:"Sì", spec:"Ritratto, Moda", collab:"Sì", anno:"2021", note:"" },
+  { nome:"Elena Gallo", email:"elena@email.it", regione:"Emilia-Romagna", provincia:"Bologna", comune:"Bologna", studio:"No", mq:"", sfondi:"", luci:"", ciclorama:"", ospita:"", spec:"Food, Still life", collab:"Sì", anno:"2022", note:"" },
+  { nome:"Francesco Mori", email:"fmori@email.it", regione:"Sicilia", provincia:"Palermo", comune:"Palermo", studio:"Sì", mq:"35", sfondi:"Bianco, nero", luci:"Flash Elinchrom", ciclorama:"No", ospita:"No", spec:"Ritratto, Matrimonio", collab:"No", anno:"2023", note:"" },
+  { nome:"Anna Costa", email:"anna@email.it", regione:"Toscana", provincia:"Livorno", comune:"Livorno", studio:"No", mq:"", sfondi:"", luci:"", ciclorama:"", ospita:"", spec:"Ritratto, Famiglia", collab:"Sì", anno:"2022", note:"" },
+  { nome:"Roberto Esposito", email:"rob@email.it", regione:"Liguria", provincia:"Genova", comune:"Genova", studio:"Sì", mq:"20", sfondi:"Bianco", luci:"Godox AD400", ciclorama:"No", ospita:"Sì", spec:"Matrimonio, Corporate", collab:"Sì", anno:"2021", note:"" },
+];
+
+const CITY_COORDS = {
+  "Milano":[45.4654,9.1859],"Firenze":[43.7696,11.2558],"Roma":[41.9028,12.4964],
+  "Torino":[45.0703,7.6869],"Venezia":[45.4408,12.3155],"Napoli":[40.8518,14.2681],
+  "Bologna":[44.4949,11.3426],"Palermo":[38.1157,13.3615],"Livorno":[43.5485,10.3106],
+  "Genova":[44.4056,8.9463],"Bari":[41.1171,16.8719],"Catania":[37.5079,15.0830],
+  "Verona":[45.4386,10.9916],"Brescia":[45.5416,10.2118],"Padova":[45.4077,11.8736],
+  "Trieste":[45.6495,13.7768],"Cagliari":[39.2238,9.1217],"Ancona":[43.6170,13.5189],
+  "Perugia":[43.1122,12.3888],"Trento":[46.0679,11.1211],"Bergamo":[45.6983,9.6773],
+  "Modena":[44.6471,10.9252],"Parma":[44.8015,10.3279],"Reggio Emilia":[44.6989,10.6295],
+  "Ferrara":[44.8381,11.6197],"Ravenna":[44.4184,12.2035],"Rimini":[44.0678,12.5695],
+  "Forlì":[44.2227,12.0407],"Cesena":[44.1396,12.2435],"Pisa":[43.7228,10.4017],
+  "Lucca":[43.8429,10.5027],"Arezzo":[43.4633,11.8784],"Siena":[43.3188,11.3307],
+  "Prato":[43.8802,11.0967],"Pistoia":[43.9297,10.9073],"Grosseto":[42.7654,11.1146],
+  "Massa":[44.0354,10.1394],"Carrara":[44.0793,10.0980],"Viareggio":[43.8670,10.2562],
+};
+
+let allData = [];
+let filtered = [];
+let markers = [];
+let map;
+let sheetId = localStorage.getItem('sheetId') || '';
+let sheetName = localStorage.getItem('sheetName') || 'Risposte al modulo 1';
+let isDemo = false;
+
+// COLUMN MAPPING — adjust these to match your Google Form field names
+// Keys are internal names, values are the column headers in your Google Sheet
+const COL = {
+  nome: 'Nome',
+  cognome: 'Cognome',
+  email: 'Email',
+  regione: 'Regione',
+  provincia: 'Provincia',
+  comune: 'Comune',
+  studio: 'Hai uno studio fotografico?',
+  mq: 'Superficie (mq)',
+  sfondi: 'Sfondi disponibili',
+  luci: 'Attrezzatura luci',
+  ciclorama: 'Ciclorama',
+  ospita: 'Disponibile ad ospitare colleghi?',
+  spec: 'Specializzazione',
+  collab: 'Disponibile a collaborazioni?',
+  anno: 'Anno iscrizione',
+  note: 'Note sullo studio',
+};
+
+function initMap() {
+  map = L.map('map', { zoomControl: true }).setView([42.5, 12.5], 6);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    maxZoom: 19
+  }).addTo(map);
+}
+
+function getInitials(nome) {
+  const parts = nome.trim().split(' ');
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+  return nome.substring(0,2).toUpperCase();
+}
+
+function makeMarkerIcon(hasStudio) {
+  const color = hasStudio ? '#3b6d11' : '#c8602a';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
+    <path d="M14 0C6.27 0 0 6.27 0 14c0 9.33 14 22 14 22s14-12.67 14-22C28 6.27 21.73 0 14 0z" fill="${color}"/>
+    <circle cx="14" cy="14" r="6" fill="white" opacity="0.9"/>
+  </svg>`;
+  return L.divIcon({
+    html: svg,
+    iconSize: [28, 36],
+    iconAnchor: [14, 36],
+    popupAnchor: [0, -36],
+    className: ''
+  });
+}
+
+async function geocode(comune, provincia, regione) {
+  const key = `${comune},${provincia},${regione}`;
+  if (GEOCODE_CACHE[key]) return GEOCODE_CACHE[key];
+  if (CITY_COORDS[comune]) { GEOCODE_CACHE[key] = CITY_COORDS[comune]; return CITY_COORDS[comune]; }
+  try {
+    const q = encodeURIComponent(`${comune}, ${provincia}, Italia`);
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1&countrycodes=it`);
+    const d = await r.json();
+    if (d && d[0]) {
+      const c = [parseFloat(d[0].lat), parseFloat(d[0].lon)];
+      GEOCODE_CACHE[key] = c; return c;
+    }
+  } catch(e) {}
+  const fallbacks = { 'Lombardia':[45.46,9.19],'Toscana':[43.77,11.25],'Lazio':[41.90,12.49],'Piemonte':[45.07,7.68],'Veneto':[45.44,12.31],'Campania':[40.85,14.26],'Emilia-Romagna':[44.49,11.34],'Sicilia':[38.11,13.36],'Liguria':[44.40,8.94],'Puglia':[41.11,16.87],'Sardegna':[39.22,9.12],'Marche':[43.61,13.51],'Umbria':[43.11,12.38],'Trentino':[46.06,11.12],'Calabria':[38.9,16.6],'Basilicata':[40.6,15.9],'Molise':[41.5,14.6],'Abruzzo':[42.3,13.5],'Friuli':[45.6,13.7] };
+  for (const [k,v] of Object.entries(fallbacks)) { if (regione && regione.includes(k)) { GEOCODE_CACHE[key]=v; return v; } }
+  GEOCODE_CACHE[key] = [42.5,12.5]; return [42.5,12.5];
+}
+
+function buildPopup(d) {
+  const hasStudio = d.studio && d.studio.toLowerCase().startsWith('s');
+  let html = `<div class="popup-inner">
+    <div class="popup-name">${d.nome}</div>
+    <div class="popup-location">📍 ${[d.comune, d.provincia, d.regione].filter(Boolean).join(', ')}</div>`;
+  if (d.email) html += `<div class="popup-divider"></div><div class="popup-row"><span class="popup-row-label">Email</span><span class="popup-row-val">${d.email}</span></div>`;
+  if (d.spec) html += `<div class="popup-row"><span class="popup-row-label">Spec.</span><span class="popup-row-val">${d.spec}</span></div>`;
+  if (d.collab) html += `<div class="popup-row"><span class="popup-row-label">Collab.</span><span class="popup-row-val">${d.collab}</span></div>`;
+  if (d.anno) html += `<div class="popup-row"><span class="popup-row-label">Anno</span><span class="popup-row-val">${d.anno}</span></div>`;
+  html += `</div>`;
+  if (hasStudio) {
+    html += `<div class="popup-studio-header"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg> Studio fotografico`;
+    const details = [d.mq?`${d.mq} mq`:'', d.sfondi, d.luci, d.ciclorama&&d.ciclorama.toLowerCase().startsWith('s')?'Ciclorama':''].filter(Boolean);
+    if (details.length) html += ` · ${details.join(' · ')}`;
+    html += `</div>`;
+  }
+  return html;
+}
+
+async function renderMap(data) {
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+  for (const d of data) {
+    const coords = await geocode(d.comune, d.provincia, d.regione);
+    const hasStudio = d.studio && d.studio.toLowerCase().startsWith('s');
+    const marker = L.marker(coords, { icon: makeMarkerIcon(hasStudio) });
+    marker.bindPopup(buildPopup(d), { maxWidth: 280 });
+    marker.addTo(map);
+    markers.push(marker);
+  }
+}
+
+function buildCard(d, idx) {
+  const hasStudio = d.studio && d.studio.toLowerCase().startsWith('s');
+  const specs = d.spec ? d.spec.split(',').map(s=>s.trim()).filter(Boolean) : [];
+  return `<div class="card" data-idx="${idx}" onclick="selectCard(${idx})">
+    <div class="card-header">
+      <div class="card-avatar">${getInitials(d.nome)}</div>
+      <div style="flex:1">
+        <div class="card-name">${d.nome}</div>
+        <div class="card-location">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          ${[d.comune, d.regione].filter(Boolean).join(', ')}
+        </div>
+      </div>
+      ${hasStudio ? `<span class="badge badge-studio"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>Studio</span>` : ''}
+    </div>
+    ${specs.length ? `<div class="card-tags">${specs.map(s=>`<span class="tag">${s}</span>`).join('')}</div>` : ''}
+  </div>`;
+}
+
+function selectCard(idx) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+  const card = document.querySelector(`[data-idx="${idx}"]`);
+  if (card) { card.classList.add('selected'); card.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+  if (markers[idx]) {
+    map.setView(markers[idx].getLatLng(), 13);
+    markers[idx].openPopup();
+  }
+}
+
+function renderCards(data) {
+  const list = document.getElementById('cardsList');
+  if (!data.length) { list.innerHTML = '<div class="empty-state">Nessun corsista trovato con i filtri selezionati.</div>'; return; }
+  list.innerHTML = data.map((d,i) => buildCard(d,i)).join('');
+}
+
+function updateStats(data) {
+  document.getElementById('statTot').textContent = data.length;
+  document.getElementById('statStudio').textContent = data.filter(d => d.studio && d.studio.toLowerCase().startsWith('s')).length;
+  document.getElementById('statRegioni').textContent = new Set(data.map(d=>d.regione).filter(Boolean)).size;
+  document.getElementById('statCollab').textContent = data.filter(d => d.collab && d.collab.toLowerCase().startsWith('s')).length;
+}
+
+function populateFilters(data) {
+  const regioni = [...new Set(data.map(d=>d.regione).filter(Boolean))].sort();
+  const specs = [...new Set(data.flatMap(d => d.spec ? d.spec.split(',').map(s=>s.trim()) : []).filter(Boolean))].sort();
+  const rSel = document.getElementById('regioneFilter');
+  const sSel = document.getElementById('specFilter');
+  regioni.forEach(r => { const o = document.createElement('option'); o.value=r; o.textContent=r; rSel.appendChild(o); });
+  specs.forEach(s => { const o = document.createElement('option'); o.value=s; o.textContent=s; sSel.appendChild(o); });
+}
+
+let studioFilter = 'all', collabFilter = 'all';
+
+function applyFilters() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const regione = document.getElementById('regioneFilter').value;
+  const spec = document.getElementById('specFilter').value;
+  filtered = allData.filter(d => {
+    const text = `${d.nome} ${d.comune} ${d.provincia}`.toLowerCase();
+    if (search && !text.includes(search)) return false;
+    if (regione && d.regione !== regione) return false;
+    if (spec && (!d.spec || !d.spec.includes(spec))) return false;
+    if (studioFilter === 'si' && !(d.studio && d.studio.toLowerCase().startsWith('s'))) return false;
+    if (studioFilter === 'no' && (d.studio && d.studio.toLowerCase().startsWith('s'))) return false;
+    if (collabFilter === 'si' && !(d.collab && d.collab.toLowerCase().startsWith('s'))) return false;
+    return true;
+  });
+  renderCards(filtered);
+  updateStats(filtered);
+  renderMap(filtered);
+}
+
+async function loadFromSheet(id, name) {
+  const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const text = await r.text();
+  const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+  const cols = json.table.cols.map(c => c.label);
+  const rows = json.table.rows || [];
+  function getVal(row, colName) {
+    const idx = cols.indexOf(colName);
+    if (idx === -1) return '';
+    const cell = row.c[idx];
+    return cell && cell.v != null ? String(cell.v) : '';
+  }
+  return rows.map(row => ({
+    nome: [getVal(row, COL.nome), getVal(row, COL.cognome)].filter(Boolean).join(' '),
+    email: getVal(row, COL.email),
+    regione: getVal(row, COL.regione),
+    provincia: getVal(row, COL.provincia),
+    comune: getVal(row, COL.comune),
+    studio: getVal(row, COL.studio),
+    mq: getVal(row, COL.mq),
+    sfondi: getVal(row, COL.sfondi),
+    luci: getVal(row, COL.luci),
+    ciclorama: getVal(row, COL.ciclorama),
+    ospita: getVal(row, COL.ospita),
+    spec: getVal(row, COL.spec),
+    collab: getVal(row, COL.collab),
+    anno: getVal(row, COL.anno),
+    note: getVal(row, COL.note),
+  })).filter(d => d.nome);
+}
+
+async function loadData(data) {
+  allData = data;
+  filtered = [...allData];
+  populateFilters(allData);
+  renderCards(filtered);
+  updateStats(filtered);
+  await renderMap(filtered);
+  document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+function useDemoData() {
+  isDemo = true;
+  document.getElementById('configModal').classList.add('hidden');
+  document.getElementById('demoBanner').classList.remove('hidden');
+  loadData(DEMO_DATA);
+}
+
+document.getElementById('useDemoBtn').addEventListener('click', useDemoData);
+document.getElementById('configureLink').addEventListener('click', () => {
+  document.getElementById('configModal').classList.remove('hidden');
+});
+
+document.getElementById('loadSheetBtn').addEventListener('click', async () => {
+  const id = document.getElementById('sheetIdInput').value.trim();
+  const name = document.getElementById('sheetNameInput').value.trim();
+  if (!id) return;
+  document.getElementById('sheetError').classList.remove('visible');
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+  try {
+    const data = await loadFromSheet(id, name);
+    localStorage.setItem('sheetId', id);
+    localStorage.setItem('sheetName', name);
+    document.getElementById('configModal').classList.add('hidden');
+    document.getElementById('demoBanner').classList.add('hidden');
+    isDemo = false;
+    loadData(data);
+  } catch(e) {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+    document.getElementById('sheetError').classList.add('visible');
+  }
+});
+
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  document.getElementById('sheetIdInput').value = localStorage.getItem('sheetId') || '';
+  document.getElementById('sheetNameInput').value = localStorage.getItem('sheetName') || 'Risposte al modulo 1';
+  document.getElementById('configModal').classList.remove('hidden');
+});
+
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+document.getElementById('regioneFilter').addEventListener('change', applyFilters);
+document.getElementById('specFilter').addEventListener('change', applyFilters);
+
+document.querySelectorAll('[data-studio]').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('[data-studio]').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    studioFilter = chip.dataset.studio;
+    applyFilters();
+  });
+});
+document.querySelectorAll('[data-collab]').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('[data-collab]').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    collabFilter = chip.dataset.collab;
+    applyFilters();
+  });
+});
+
+// Init
+initMap();
+if (sheetId) {
+  document.getElementById('sheetIdInput').value = sheetId;
+  document.getElementById('sheetNameInput').value = sheetName;
+  loadFromSheet(sheetId, sheetName)
+    .then(data => { document.getElementById('configModal').classList.add('hidden'); loadData(data); })
+    .catch(() => { document.getElementById('loadingOverlay').classList.add('hidden'); document.getElementById('configModal').classList.remove('hidden'); });
+} else {
+  document.getElementById('loadingOverlay').classList.add('hidden');
+  document.getElementById('configModal').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
