@@ -360,7 +360,10 @@ function initMap(){
       });
     }
   });
-  map.addLayer(clusterGroup);
+   map.addLayer(clusterGroup);
+  clusterGroup.on('clusterclick', function(e) {
+    e.layer.spiderfy();
+  });
 }
 
 function markerIcon(hasStudio){
