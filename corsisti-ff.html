@@ -339,7 +339,7 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-// ── MAP ───────────────────────────────────────────────────────────────────────
+// ── MAPPA ────────────────────────────────────────────────────────────────────
 function initMap(){
   map=L.map('map',{zoomControl:true}).setView([42.5,12.5],6);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
@@ -350,7 +350,7 @@ function initMap(){
     maxClusterRadius:55,
     spiderfyOnMaxZoom:true,
     zoomToBoundsOnClick:false,
-    // never disable clustering — let spiderfy handle same-spot markers
+    // al click sul cluster apre subito il ventaglio senza zoomare
     iconCreateFunction:function(cluster){
       const n=cluster.getChildCount();
       const sz=n<5?36:n<10?40:44;
@@ -360,12 +360,18 @@ function initMap(){
       });
     }
   });
-   map.addLayer(clusterGroup);
-  clusterGroup.on('clusterclick', function(e) {
+  map.addLayer(clusterGroup);
+  // click sul pallino → apre ventaglio direttamente senza zoomare
+  clusterGroup.on('clusterclick',function(e){
     e.layer.spiderfy();
   });
+  // quando si apre un popup, centra la mappa sul marker (utile su mobile)
+  map.on('popupopen',function(e){
+    const px=map.project(e.popup.getLatLng());
+    px.y-=100; // sposta un po' verso il basso per non coprire il popup
+    map.panTo(map.unproject(px),{animate:true});
+  });
 }
-
 function markerIcon(hasStudio){
   const c=hasStudio?'#3b6d11':'#c8602a';
   return L.divIcon({
@@ -440,14 +446,12 @@ async function geocode(comune,provincia,regione){
   GC[key]=[42.5,12.5];return[42.5,12.5];
 }
 
-// ── RENDER MAP ────────────────────────────────────────────────────────────────
-// Spread radius in degrees (~80m) for same-spot markers
-const SPREAD=0.0009;
-
+// ── RENDER MAPPA ──────────────────────────────────────────────────────────────
+// Raggio di distribuzione in gradi (~300m) per marker dello stesso comune
+const SPREAD=0.003;
 async function renderMap(data){
   clusterGroup.clearLayers();
-
-  // group by exact coordinate key
+  // raggruppa per coordinate esatte
   const groups={};
   for(const d of data){
     const coords=await geocode(d.comune,d.provincia,d.regione);
@@ -455,12 +459,12 @@ async function renderMap(data){
     if(!groups[key]) groups[key]={coords,people:[]};
     groups[key].people.push(d);
   }
-
+  // crea i marker distribuiti a ventaglio se più persone nello stesso posto
   for(const{coords,people} of Object.values(groups)){
     people.forEach((d,i)=>{
       let lat=coords[0],lng=coords[1];
       if(people.length>1){
-        // evenly spread in a circle
+        // distribuisce i marker in cerchio attorno al centro
         const angle=(2*Math.PI*i)/people.length - Math.PI/2;
         lat+=SPREAD*Math.cos(angle);
         lng+=SPREAD*Math.sin(angle);
