@@ -350,6 +350,7 @@ function initMap(){
     maxClusterRadius:55,
     spiderfyOnMaxZoom:true,
     zoomToBoundsOnClick:false,
+    spiderfyDistanceMultiplier:2.5,  // Quanto si allarga il ventaglio dei segnaposti al click
     // al click sul cluster apre subito il ventaglio senza zoomare
     iconCreateFunction:function(cluster){
       const n=cluster.getChildCount();
