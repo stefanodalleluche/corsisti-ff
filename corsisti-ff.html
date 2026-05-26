@@ -349,6 +349,7 @@ function initMap(){
     showCoverageOnHover:false,
     maxClusterRadius:55,
     spiderfyOnMaxZoom:true,
+    zoomToBoundsOnClick:false,
     // never disable clustering — let spiderfy handle same-spot markers
     iconCreateFunction:function(cluster){
       const n=cluster.getChildCount();
