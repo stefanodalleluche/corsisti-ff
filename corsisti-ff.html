@@ -471,7 +471,7 @@ async function renderMap(data){
         lng+=SPREAD*Math.sin(angle);
       }
       const hasStudio=d.studio&&d.studio.toLowerCase()!=='no';
-      const m=L.marker([lat,lng],{icon:markerIcon(hasStudio)});
+      const m=L.marker([lat,lng],{icon:markerIcon(hasStudio), _personData:d});
       m.bindPopup(buildPopup(d),{maxWidth:290});
       m.on('popupopen',()=>{window.__pd=d;});
       clusterGroup.addLayer(m);
@@ -515,22 +515,27 @@ function selectCard(idx){
   geocode(d.comune,d.provincia,d.regione).then(coords=>{
     map.setView(coords,14);
     setTimeout(()=>{
+      let found=null;
       clusterGroup.eachLayer(layer=>{
-        if(!layer.getLatLng) return;
-        const p=layer.getLatLng();
-        // cerca il marker più vicino alle coordinate della persona
-        if(Math.abs(p.lat-coords[0])<0.015&&Math.abs(p.lng-coords[1])<0.015){
-          window.__pd=d;
-          // se il marker è dentro un cluster, prima espande il cluster
-          const parent=clusterGroup.getVisibleParent(layer);
-          if(parent&&parent!==layer){
-            parent.spiderfy();
-            setTimeout(()=>layer.openPopup(),300);
-          } else {
-            layer.openPopup();
+        if(layer.options&&layer.options._personData){
+          const p=layer.options._personData;
+          if(p.nome===d.nome&&
+             p.regione===d.regione&&
+             p.provincia===d.provincia){
+            found=layer;
           }
         }
       });
+      if(found){
+        window.__pd=d;
+        const parent=clusterGroup.getVisibleParent(found);
+        if(parent&&parent!==found){
+          parent.spiderfy();
+          setTimeout(()=>found.openPopup(),300);
+        } else {
+          found.openPopup();
+        }
+      }
     },500);
   });
 }
