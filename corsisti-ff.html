@@ -518,12 +518,20 @@ function selectCard(idx){
       clusterGroup.eachLayer(layer=>{
         if(!layer.getLatLng) return;
         const p=layer.getLatLng();
-        if(Math.abs(p.lat-coords[0])<0.003&&Math.abs(p.lng-coords[1])<0.003){
+        // cerca il marker più vicino alle coordinate della persona
+        if(Math.abs(p.lat-coords[0])<0.015&&Math.abs(p.lng-coords[1])<0.015){
           window.__pd=d;
-          layer.openPopup();
+          // se il marker è dentro un cluster, prima espande il cluster
+          const parent=clusterGroup.getVisibleParent(layer);
+          if(parent&&parent!==layer){
+            parent.spiderfy();
+            setTimeout(()=>layer.openPopup(),300);
+          } else {
+            layer.openPopup();
+          }
         }
       });
-    },400);
+    },500);
   });
 }
 window.selectCard=selectCard;
