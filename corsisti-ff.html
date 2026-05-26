@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
 <style>
-:root {
+:root{
   --bg:#f7f5f0;--surface:#ffffff;--border:#e8e4dc;--text:#1a1814;
   --text-muted:#7a756a;--accent:#c8602a;--accent-light:#f5ede6;
   --accent-dark:#9e4a1e;--green:#3b6d11;--green-light:#eaf3de;
@@ -25,12 +25,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .2s,color .2s;}
 
-header{
-  background:var(--surface);border-bottom:1px solid var(--border);
-  padding:.75rem 1.25rem;display:flex;align-items:center;
-  justify-content:space-between;gap:.5rem;
-  position:sticky;top:0;z-index:1000;
-}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;position:sticky;top:0;z-index:1000;}
 .logo{display:flex;align-items:center;gap:.6rem;min-width:0;}
 .logo-icon{width:32px;height:32px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;color:white;font-family:'Playfair Display',serif;font-size:.9rem;font-weight:600;flex-shrink:0;}
 .logo-text h1{font-family:'Playfair Display',serif;font-size:.92rem;font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -58,7 +53,7 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);}
 
 .collapsible-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:.58rem .9rem;border-bottom:1px solid var(--border);font-size:.75rem;font-weight:500;color:var(--text-muted);user-select:none;transition:background .15s;flex-shrink:0;}
 .collapsible-header:hover{background:var(--bg);}
-.collapsible-header .ch-left{display:flex;align-items:center;gap:.35rem;}
+.ch-left{display:flex;align-items:center;gap:.35rem;}
 .caret{width:13px;height:13px;transition:transform .2s;flex-shrink:0;}
 .collapsible-header.open .caret{transform:rotate(180deg);}
 .collapsible-body{padding:.65rem .9rem;border-bottom:1px solid var(--border);display:none;flex-shrink:0;}
@@ -73,7 +68,6 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);}
 .cards-empty svg{width:28px;height:28px;opacity:.2;}
 .cards-list{flex:1;overflow-y:auto;padding:.55rem;display:none;}
 .cards-list.visible{display:block;}
-
 .card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:.7rem .8rem;margin-bottom:.36rem;cursor:pointer;transition:all .15s;}
 .card:hover{border-color:var(--accent);box-shadow:var(--shadow);}
 .card.selected{border-color:var(--accent);background:var(--accent-light);}
@@ -94,17 +88,17 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);}
 
 #map{flex:1;z-index:1;}
 
-/* cluster */
+/* cluster bubbles */
 .marker-cluster-small{background-color:rgba(200,96,42,.18);}
-.marker-cluster-small div{background-color:rgba(200,96,42,.75);}
+.marker-cluster-small div{background-color:rgba(200,96,42,.78);}
 .marker-cluster-medium{background-color:rgba(200,96,42,.22);}
-.marker-cluster-medium div{background-color:rgba(200,96,42,.82);}
+.marker-cluster-medium div{background-color:rgba(200,96,42,.84);}
 .marker-cluster-large{background-color:rgba(200,96,42,.28);}
-.marker-cluster-large div{background-color:rgba(200,96,42,.9);}
-.marker-cluster div{color:white;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.76rem;}
+.marker-cluster-large div{background-color:rgba(200,96,42,.92);}
+.marker-cluster div{color:white;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.76rem;}
 
 /* popup */
-.leaflet-popup-content-wrapper{border-radius:12px!important;box-shadow:0 4px 24px rgba(0,0,0,.14)!important;border:1px solid #e8e4dc!important;padding:0!important;overflow:hidden;}
+.leaflet-popup-content-wrapper{border-radius:12px!important;box-shadow:0 4px 24px rgba(0,0,0,.15)!important;border:1px solid #e8e4dc!important;padding:0!important;overflow:hidden;}
 .leaflet-popup-content{margin:0!important;width:272px!important;}
 .popup-inner{padding:.85rem .95rem;}
 .popup-name{font-family:'Playfair Display',serif;font-size:.96rem;font-weight:600;margin-bottom:.1rem;color:#1a1814;}
@@ -121,14 +115,6 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);}
 .popup-btn-primary{background:#c8602a;border-color:#c8602a;color:white;}
 .popup-btn-primary:hover{background:#9e4a1e;border-color:#9e4a1e;color:white;}
 
-/* multi-person popup list */
-.popup-person-list{max-height:240px;overflow-y:auto;}
-.popup-person-item{padding:.5rem .95rem;border-bottom:1px solid #e8e4dc;cursor:pointer;transition:background .12s;}
-.popup-person-item:last-child{border-bottom:none;}
-.popup-person-item:hover{background:#f7f5f0;}
-.popup-person-name{font-size:.82rem;font-weight:500;color:#1a1814;}
-.popup-person-sub{font-size:.7rem;color:#7a756a;margin-top:.1rem;}
-
 /* mobile */
 .mobile-filter-btn{display:none;position:fixed;bottom:1.2rem;right:1.2rem;background:var(--accent);color:white;border:none;border-radius:50px;padding:.6rem 1.1rem;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;cursor:pointer;z-index:1500;box-shadow:0 4px 16px rgba(200,96,42,.4);align-items:center;gap:.3rem;}
 .mobile-filter-btn svg{width:13px;height:13px;}
@@ -137,14 +123,13 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);}
 .panel-handle{width:32px;height:3px;background:var(--border);border-radius:2px;margin:.6rem auto 0;}
 .panel-content{padding:.85rem 1rem 2.5rem;}
 .panel-close{float:right;background:none;border:none;font-size:.95rem;color:var(--text-muted);cursor:pointer;}
-.mobile-filter-label{font-size:.67rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:.3rem;margin-top:.55rem;}
+.mob-label{font-size:.67rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin:.55rem 0 .3rem;}
 
 .loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:.8rem;}
 .loading-overlay.hidden{display:none;}
 .spinner{width:26px;height:26px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loading-text{font-size:.78rem;color:var(--text-muted);font-family:'Playfair Display',serif;}
-
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:.52rem 1.1rem;border-radius:8px;font-size:.76rem;z-index:9000;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;}
 
@@ -178,9 +163,9 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);}
   </div>
   <div class="header-actions">
     <button class="btn-icon" id="themeToggle" title="Tema chiaro/scuro">
-      <svg id="themeIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      <svg id="themeIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"></svg>
     </button>
-    <a class="btn btn-primary" id="registerBtn" href="https://docs.google.com/forms/d/e/1FAIpQLSeJXmT-e9207ddDZZ5tF6hA8lBYseXzcRG3GcMHw6LYEwNZEw/viewform" target="_blank">
+    <a class="btn btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSeJXmT-e9207ddDZZ5tF6hA8lBYseXzcRG3GcMHw6LYEwNZEw/viewform" target="_blank">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
       Registrati
     </a>
@@ -209,7 +194,12 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);}
 
     <div class="collapsible-header" id="studioToggle">
       <span class="ch-left">
-        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <!-- camera with flash SVG icon -->
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+          <path d="M17 3l1.5 2"/>
+        </svg>
         Studio fotografico
       </span>
       <svg class="caret" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -236,7 +226,6 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);}
       <div class="stat-item"><span class="stat-num" id="statRegioni">—</span><span class="stat-label">regioni</span></div>
     </div>
   </aside>
-
   <div id="map"></div>
 </div>
 
@@ -249,54 +238,69 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);}
   <div class="panel-handle"></div>
   <div class="panel-content">
     <button class="panel-close" id="mobilePanelClose">✕</button>
-    <div class="mobile-filter-label">Cerca</div>
-    <div class="search-wrap filter-row">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="position:absolute;left:.55rem;top:50%;transform:translateY(-50%);width:12px;height:12px;color:var(--text-muted)"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <div class="mob-label">Cerca</div>
+    <div class="search-wrap filter-row" style="position:relative">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="position:absolute;left:.55rem;top:50%;transform:translateY(-50%);width:12px;height:12px;color:var(--text-muted);pointer-events:none"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       <input type="text" id="searchInputM" placeholder="Cerca per nome o città..." style="padding-left:1.75rem"/>
     </div>
-    <div class="mobile-filter-label">Regione</div>
+    <div class="mob-label">Regione</div>
     <select id="regioneFilterM" class="filter-row"><option value="">Tutte le regioni</option></select>
-    <div class="mobile-filter-label">Percorso</div>
+    <div class="mob-label">Percorso</div>
     <select id="percorsoFilterM" class="filter-row">
       <option value="">Tutti i percorsi</option>
       <option value="Lunedì">Lunedì</option>
       <option value="Mercoledì">Mercoledì</option>
       <option value="Giovedì">Giovedì</option>
     </select>
-    <div class="mobile-filter-label">Studio fotografico</div>
+    <div class="mob-label">Studio fotografico</div>
     <div class="filter-chips" style="margin-bottom:.75rem">
       <span class="chip active" data-studio-m="all">Tutti</span>
       <span class="chip" data-studio-m="si">Con studio</span>
       <span class="chip" data-studio-m="no">Senza studio</span>
     </div>
-    <div class="cards-empty" id="cardsEmptyM" style="padding:1rem 0;font-size:.76rem;color:var(--text-muted);text-align:center;display:flex;flex-direction:column;align-items:center;gap:.3rem">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="width:24px;height:24px;opacity:.2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      Usa i filtri per cercare un corsista
+    <div class="cards-empty" id="cardsEmptyM" style="display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:1rem 0;font-size:.76rem;color:var(--text-muted);text-align:center">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="width:22px;height:22px;opacity:.2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      Usa i filtri per cercare
     </div>
     <div id="cardsListM"></div>
   </div>
 </div>
 
-<!-- Load scripts synchronously before our code -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────────
+// ── CONFIG ───────────────────────────────────────────────────────────────────
 const SHEET_ID   = '1qAe0SRSmODfnBUug9qfo5IwNlJy-KU684yG-fRS4vXk';
 const SHEET_NAME = 'Form_Responses';
 const COL = {
-  nome:'Nome', cognome:'Cognome', email:'Email',
-  regione:'Regione', provincia:'Provincia', comune:'Comune',
+  nome:'Nome',cognome:'Cognome',email:'Email',
+  regione:'Regione',provincia:'Provincia',comune:'Comune',
   percorso:'Che percorso frequenti?',
   studio:'Possiedi uno studio fotografico',
-  superficie:'Superficie', descrizione:'Descrizione e allestimento',
-  telefono:'Telefono', contatto:'Contatto',
+  superficie:'Superficie',descrizione:'Descrizione e allestimento',
+  telefono:'Telefono',contatto:'Contatto',
 };
-const SPIDER_THRESHOLD = 4; // use list popup above this count
 
-// ── GEOCODE CACHE & KNOWN CITIES ────────────────────────────────────────────
-const GC = {};
-const CC = {
+// ── DEFAULT DARK THEME ───────────────────────────────────────────────────────
+const savedTheme = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', savedTheme);
+function setThemeIcon(t){
+  document.getElementById('themeIcon').innerHTML = t==='dark'
+    ? '<path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>'
+    : '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
+}
+setThemeIcon(savedTheme);
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme');
+  const nxt=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',nxt);
+  localStorage.setItem('theme',nxt);
+  setThemeIcon(nxt);
+});
+
+// ── GEOCODE DATA ──────────────────────────────────────────────────────────────
+const GC={};
+const CC={
   "Milano":[45.4654,9.1859],"Firenze":[43.7696,11.2558],"Roma":[41.9028,12.4964],
   "Torino":[45.0703,7.6869],"Venezia":[45.4408,12.3155],"Napoli":[40.8518,14.2681],
   "Bologna":[44.4949,11.3426],"Palermo":[38.1157,13.3615],"Livorno":[43.5485,10.3106],
@@ -309,13 +313,12 @@ const CC = {
   "Pisa":[43.7228,10.4017],"Lucca":[43.8429,10.5027],"Arezzo":[43.4633,11.8784],
   "Siena":[43.3188,11.3307],"Prato":[43.8802,11.0967],"Pistoia":[43.9297,10.9073],
   "Grosseto":[42.7654,11.1146],"Massa":[44.0354,10.1394],"Viareggio":[43.8670,10.2562],
-  "Camaiore":[43.9378,10.3168],"Pietrasanta":[43.9602,10.2279],
-  "La Spezia":[44.1024,9.8240],"Savona":[44.3070,8.4821],"Imperia":[43.8875,8.0297],
+  "Camaiore":[43.9378,10.3168],"La Spezia":[44.1024,9.8240],"Savona":[44.3070,8.4821],
   "Vicenza":[45.5455,11.5354],"Treviso":[45.6669,12.2433],"Udine":[46.0711,13.2350],
   "Bolzano":[46.4983,11.3548],"Cosenza":[39.3014,16.2541],"Messina":[38.1938,15.5540],
-  "Sassari":[40.7261,8.5556],"Agrigento":[37.3096,13.5765],
+  "Sassari":[40.7261,8.5556],"Agrigento":[37.3096,13.5765],"Imperia":[43.8875,8.0297],
 };
-const REGION_FB = {
+const RFB={
   'Lombardia':[45.46,9.19],'Toscana':[43.77,11.25],'Lazio':[41.90,12.49],
   'Piemonte':[45.07,7.68],'Veneto':[45.44,12.31],'Campania':[40.85,14.26],
   'Emilia-Romagna':[44.49,11.34],'Sicilia':[38.11,13.36],'Liguria':[44.40,8.94],
@@ -326,50 +329,32 @@ const REGION_FB = {
   "Valle d'Aosta":[45.73,7.42],
 };
 
-let allData=[], filtered=[], map, clusterGroup;
-let studioFilter='all', studioFilterM='all', hasActiveFilter=false;
+let allData=[],filtered=[],map,clusterGroup;
+let studioFilter='all',studioFilterM='all',hasActiveFilter=false;
 
-// ── THEME ────────────────────────────────────────────────────────────────────
-const savedTheme = localStorage.getItem('theme')||'light';
-document.documentElement.setAttribute('data-theme', savedTheme);
-setThemeIcon(savedTheme);
-document.getElementById('themeToggle').addEventListener('click',()=>{
-  const cur=document.documentElement.getAttribute('data-theme');
-  const nxt=cur==='dark'?'light':'dark';
-  document.documentElement.setAttribute('data-theme',nxt);
-  localStorage.setItem('theme',nxt);
-  setThemeIcon(nxt);
-});
-function setThemeIcon(t){
-  document.getElementById('themeIcon').innerHTML = t==='dark'
-    ?'<path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>'
-    :'<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
-}
-
-// ── TOAST ────────────────────────────────────────────────────────────────────
+// ── TOAST ─────────────────────────────────────────────────────────────────────
 function showToast(msg){
   const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
+  t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-// ── MAP INIT ──────────────────────────────────────────────────────────────────
+// ── MAP ───────────────────────────────────────────────────────────────────────
 function initMap(){
   map=L.map('map',{zoomControl:true}).setView([42.5,12.5],6);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-    attribution:'&copy; OpenStreetMap &copy; CARTO', maxZoom:19
+    attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19
   }).addTo(map);
-
   clusterGroup=L.markerClusterGroup({
     showCoverageOnHover:false,
     maxClusterRadius:55,
     spiderfyOnMaxZoom:true,
-    disableClusteringAtZoom:15,
+    // never disable clustering — let spiderfy handle same-spot markers
     iconCreateFunction:function(cluster){
       const n=cluster.getChildCount();
       const sz=n<5?36:n<10?40:44;
       return L.divIcon({
-        html:`<div style="background:rgba(200,96,42,.88);color:white;width:${sz}px;height:${sz}px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:700;border:2.5px solid white;box-shadow:0 2px 10px rgba(0,0,0,.22)">${n}</div>`,
+        html:`<div style="background:rgba(200,96,42,.88);color:white;width:${sz}px;height:${sz}px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:700;border:2.5px solid white;box-shadow:0 2px 10px rgba(0,0,0,.25)">${n}</div>`,
         className:'',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]
       });
     }
@@ -377,7 +362,6 @@ function initMap(){
   map.addLayer(clusterGroup);
 }
 
-// ── MARKER ICON ───────────────────────────────────────────────────────────────
 function markerIcon(hasStudio){
   const c=hasStudio?'#3b6d11':'#c8602a';
   return L.divIcon({
@@ -401,16 +385,15 @@ function saveContact(d){
   const blob=new Blob([lines],{type:'text/vcard;charset=utf-8'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  a.href=url; a.download=`${d.nome.replace(/\s+/g,'_')}.vcf`;
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a); URL.revokeObjectURL(url);
+  a.href=url;a.download=`${d.nome.replace(/\s+/g,'_')}.vcf`;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
   showToast('📇 Contatto salvato! Aprilo per importarlo in rubrica.');
 }
 window.saveContact=saveContact;
-window.openPersonPopup=openPersonPopup;
 
-// ── POPUP: single person ──────────────────────────────────────────────────────
-function buildSinglePopup(d){
+// ── POPUP ─────────────────────────────────────────────────────────────────────
+function buildPopup(d){
   const hasStudio=d.studio&&d.studio.toLowerCase()!=='no';
   let html=`<div class="popup-inner">
     <div class="popup-name">${d.nome}</div>
@@ -428,47 +411,39 @@ function buildSinglePopup(d){
     let info=d.studio;
     if(d.superficie) info+=` · ${d.superficie} mq`;
     if(d.contatto)   info+=` · ${d.contatto}`;
-    html+=`<div class="popup-studio-bar">📷 ${info}</div>`;
+    html+=`<div class="popup-studio-bar">📸 ${info}</div>`;
     if(d.descrizione) html+=`<div class="popup-note">${d.descrizione}</div>`;
   }
-  const btns=[`<button class="popup-btn popup-btn-primary" onclick='saveContact(window.__pd)'>📇 Salva contatto</button>`];
+  const btns=[`<button class="popup-btn popup-btn-primary" onclick="saveContact(window.__pd)">📇 Salva contatto</button>`];
   if(d.email)    btns.push(`<a class="popup-btn" href="mailto:${d.email}">✉️ Email</a>`);
   if(d.telefono) btns.push(`<a class="popup-btn" href="https://wa.me/${d.telefono.replace(/\D/g,'')}" target="_blank">💬 WhatsApp</a>`);
   html+=`<div class="popup-actions">${btns.join('')}</div>`;
   return html;
 }
 
-// ── POPUP: multi person list ──────────────────────────────────────────────────
-function buildMultiPopup(people, comune){
-  let html=`<div class="popup-inner" style="padding-bottom:.3rem">
-    <div class="popup-name">📍 ${comune}</div>
-    <div class="popup-location">${people.length} corsisti in questa zona</div>
-  </div>
-  <div class="popup-person-list">`;
-  people.forEach((d,i)=>{
-    const hasStudio=d.studio&&d.studio.toLowerCase()!=='no';
-    html+=`<div class="popup-person-item" onclick="openPersonPopup(${i})">
-      <div class="popup-person-name">${d.nome} ${hasStudio?'📷':''}</div>
-      <div class="popup-person-sub">${[d.percorso,d.regione].filter(Boolean).join(' · ')}</div>
-    </div>`;
-  });
-  html+='</div>';
-  return html;
-}
-
-// store current multi-popup people for onclick
-let __multiPeople=[], __multiMarker=null;
-function openPersonPopup(idx){
-  const d=__multiPeople[idx];
-  window.__pd=d;
-  if(__multiMarker) __multiMarker.setPopupContent(buildSinglePopup(d));
+// ── GEOCODE ───────────────────────────────────────────────────────────────────
+async function geocode(comune,provincia,regione){
+  const key=`${comune}|${provincia}|${regione}`;
+  if(GC[key]) return GC[key];
+  if(comune&&CC[comune]){GC[key]=CC[comune];return CC[comune];}
+  try{
+    const q=encodeURIComponent(`${comune||provincia||regione}, Italia`);
+    const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1&countrycodes=it`);
+    const d=await r.json();
+    if(d&&d[0]){const c=[parseFloat(d[0].lat),parseFloat(d[0].lon)];GC[key]=c;return c;}
+  }catch(e){}
+  for(const[k,v] of Object.entries(RFB)){if(regione&&regione.includes(k)){GC[key]=v;return v;}}
+  GC[key]=[42.5,12.5];return[42.5,12.5];
 }
 
 // ── RENDER MAP ────────────────────────────────────────────────────────────────
+// Spread radius in degrees (~80m) for same-spot markers
+const SPREAD=0.0009;
+
 async function renderMap(data){
   clusterGroup.clearLayers();
 
-  // group by resolved coordinate key
+  // group by exact coordinate key
   const groups={};
   for(const d of data){
     const coords=await geocode(d.comune,d.provincia,d.regione);
@@ -477,64 +452,30 @@ async function renderMap(data){
     groups[key].people.push(d);
   }
 
-  for(const key of Object.keys(groups)){
-    const {coords,people}=groups[key];
-    if(people.length===1){
-      // single marker
-      const d=people[0];
+  for(const{coords,people} of Object.values(groups)){
+    people.forEach((d,i)=>{
+      let lat=coords[0],lng=coords[1];
+      if(people.length>1){
+        // evenly spread in a circle
+        const angle=(2*Math.PI*i)/people.length - Math.PI/2;
+        lat+=SPREAD*Math.cos(angle);
+        lng+=SPREAD*Math.sin(angle);
+      }
       const hasStudio=d.studio&&d.studio.toLowerCase()!=='no';
-      const m=L.marker(coords,{icon:markerIcon(hasStudio)});
-      m.bindPopup(buildSinglePopup(d),{maxWidth:290});
-      m.on('popupopen',()=>{ window.__pd=d; });
+      const m=L.marker([lat,lng],{icon:markerIcon(hasStudio)});
+      m.bindPopup(buildPopup(d),{maxWidth:290});
+      m.on('popupopen',()=>{window.__pd=d;});
       clusterGroup.addLayer(m);
-    } else if(people.length<=SPIDER_THRESHOLD){
-      // spiderfy: spread markers in a small circle
-      const r=0.0008;
-      people.forEach((d,i)=>{
-        const angle=(2*Math.PI*i)/people.length;
-        const jitter=[coords[0]+r*Math.sin(angle), coords[1]+r*Math.cos(angle)];
-        const hasStudio=d.studio&&d.studio.toLowerCase()!=='no';
-        const m=L.marker(jitter,{icon:markerIcon(hasStudio)});
-        m.bindPopup(buildSinglePopup(d),{maxWidth:290});
-        m.on('popupopen',()=>{ window.__pd=d; });
-        clusterGroup.addLayer(m);
-      });
-    } else {
-      // list popup for many people at same spot
-      const comune=people[0].comune||people[0].provincia||people[0].regione;
-      const hasAnyStudio=people.some(d=>d.studio&&d.studio.toLowerCase()!=='no');
-      const m=L.marker(coords,{icon:markerIcon(hasAnyStudio)});
-      __multiPeople=people;
-      __multiMarker=m;
-      m.bindPopup(buildMultiPopup(people,comune),{maxWidth:290,maxHeight:360});
-      m.on('popupopen',()=>{ __multiPeople=people; __multiMarker=m; });
-      clusterGroup.addLayer(m);
-    }
+    });
   }
 }
 
-// ── GEOCODE ───────────────────────────────────────────────────────────────────
-async function geocode(comune,provincia,regione){
-  const key=`${comune}|${provincia}|${regione}`;
-  if(GC[key]) return GC[key];
-  if(comune&&CC[comune]){ GC[key]=CC[comune]; return CC[comune]; }
-  try{
-    const q=encodeURIComponent(`${comune||provincia||regione}, Italia`);
-    const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1&countrycodes=it`);
-    const d=await r.json();
-    if(d&&d[0]){ const c=[parseFloat(d[0].lat),parseFloat(d[0].lon)]; GC[key]=c; return c; }
-  }catch(e){}
-  for(const[k,v] of Object.entries(REGION_FB)){
-    if(regione&&regione.includes(k)){ GC[key]=v; return v; }
-  }
-  GC[key]=[42.5,12.5]; return [42.5,12.5];
+// ── CARDS ─────────────────────────────────────────────────────────────────────
+function getInitials(n){
+  const p=n.trim().split(' ');
+  return p.length>=2?(p[0][0]+p[p.length-1][0]).toUpperCase():n.substring(0,2).toUpperCase();
 }
 
-// ── CARDS ──────────────────────────────────────────────────────────────────────
-function getInitials(nome){
-  const p=nome.trim().split(' ');
-  return p.length>=2?(p[0][0]+p[p.length-1][0]).toUpperCase():nome.substring(0,2).toUpperCase();
-}
 function buildCard(d,idx){
   const hasStudio=d.studio&&d.studio.toLowerCase()!=='no';
   return `<div class="card" data-idx="${idx}" onclick="selectCard(${idx})">
@@ -547,7 +488,7 @@ function buildCard(d,idx){
           ${[d.comune||d.provincia,d.regione].filter(Boolean).join(', ')}
         </div>
       </div>
-      ${hasStudio?`<span class="badge badge-studio">📷 Studio</span>`:''}
+      ${hasStudio?'<span class="badge badge-studio">📸 Studio</span>':''}
     </div>
     ${d.percorso?`<div class="card-percorso">📅 ${d.percorso}</div>`:''}
   </div>`;
@@ -564,43 +505,41 @@ function selectCard(idx){
   if(!d) return;
   geocode(d.comune,d.provincia,d.regione).then(coords=>{
     map.setView(coords,14);
-    clusterGroup.eachLayer(layer=>{
-      if(!layer.getLatLng) return;
-      const p=layer.getLatLng();
-      if(Math.abs(p.lat-coords[0])<0.002&&Math.abs(p.lng-coords[1])<0.002){
-        window.__pd=d;
-        setTimeout(()=>layer.openPopup(),300);
-      }
-    });
+    setTimeout(()=>{
+      clusterGroup.eachLayer(layer=>{
+        if(!layer.getLatLng) return;
+        const p=layer.getLatLng();
+        if(Math.abs(p.lat-coords[0])<0.003&&Math.abs(p.lng-coords[1])<0.003){
+          window.__pd=d;
+          layer.openPopup();
+        }
+      });
+    },400);
   });
 }
 window.selectCard=selectCard;
 
 function renderCards(data){
-  const show=hasActiveFilter&&data.length>0;
-  const noResult=hasActiveFilter&&data.length===0;
   const empty=document.getElementById('cardsEmpty');
   const list=document.getElementById('cardsList');
   const emptyM=document.getElementById('cardsEmptyM');
   const listM=document.getElementById('cardsListM');
-
   if(!hasActiveFilter){
-    empty.style.display=''; list.classList.remove('visible');
-    emptyM.style.display=''; listM.innerHTML='';
+    empty.style.display='';list.classList.remove('visible');
+    emptyM.style.display='';listM.innerHTML='';
     empty.innerHTML='<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Usa i filtri qui sopra<br>per cercare un corsista';
     return;
   }
-  if(noResult){
-    empty.style.display=''; list.classList.remove('visible');
-    emptyM.style.display=''; listM.innerHTML='';
+  if(!data.length){
+    empty.style.display='';list.classList.remove('visible');
+    emptyM.style.display='';listM.innerHTML='';
     empty.innerHTML='<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Nessun corsista trovato';
-    emptyM.innerHTML='<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="width:22px;height:22px;opacity:.2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Nessun corsista trovato';
     return;
   }
-  empty.style.display='none'; list.classList.add('visible');
+  empty.style.display='none';list.classList.add('visible');
   emptyM.style.display='none';
   const html=data.map((d,i)=>buildCard(d,i)).join('');
-  list.innerHTML=html; listM.innerHTML=html;
+  list.innerHTML=html;listM.innerHTML=html;
 }
 
 function updateStats(data){
@@ -614,18 +553,17 @@ function populateFilters(data){
   ['regioneFilter','regioneFilterM'].forEach(id=>{
     const sel=document.getElementById(id);
     sel.innerHTML='<option value="">Tutte le regioni</option>';
-    regioni.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sel.appendChild(o); });
+    regioni.forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent=r;sel.appendChild(o);});
   });
 }
 
-// ── FILTERS ────────────────────────────────────────────────────────────────────
+// ── FILTERS ───────────────────────────────────────────────────────────────────
 function applyFilters(){
   const s=(document.getElementById('searchInput').value||document.getElementById('searchInputM').value).toLowerCase().trim();
   const r=document.getElementById('regioneFilter').value||document.getElementById('regioneFilterM').value;
   const p=document.getElementById('percorsoFilter').value||document.getElementById('percorsoFilterM').value;
   const sf=studioFilter!=='all'?studioFilter:studioFilterM;
   hasActiveFilter=!!(s||r||p||sf!=='all');
-
   filtered=allData.filter(d=>{
     const txt=`${d.nome} ${d.comune||''} ${d.provincia||''}`.toLowerCase();
     if(s&&!txt.includes(s)) return false;
@@ -635,13 +573,12 @@ function applyFilters(){
     if(sf==='no'&&(d.studio&&d.studio.toLowerCase()!=='no')) return false;
     return true;
   });
-
   renderCards(filtered);
   updateStats(hasActiveFilter?filtered:allData);
   renderMap(hasActiveFilter?filtered:allData);
 }
 
-// ── SHEET LOADER ───────────────────────────────────────────────────────────────
+// ── SHEET LOADER ──────────────────────────────────────────────────────────────
 async function loadFromSheet(){
   const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
   const r=await fetch(url);
@@ -651,21 +588,21 @@ async function loadFromSheet(){
   const cols=json.table.cols.map(c=>c.label);
   const rows=json.table.rows||[];
   function gv(row,col){
-    const idx=cols.indexOf(col); if(idx===-1) return '';
-    const cell=row.c[idx]; return cell&&cell.v!=null?String(cell.v):'';
+    const idx=cols.indexOf(col);if(idx===-1)return'';
+    const cell=row.c[idx];return cell&&cell.v!=null?String(cell.v):'';
   }
   return rows.map(row=>({
     nome:[gv(row,COL.nome),gv(row,COL.cognome)].filter(Boolean).join(' '),
-    cognome:gv(row,COL.cognome), email:gv(row,COL.email),
-    regione:gv(row,COL.regione), provincia:gv(row,COL.provincia), comune:gv(row,COL.comune),
-    percorso:gv(row,COL.percorso), studio:gv(row,COL.studio),
-    superficie:gv(row,COL.superficie), descrizione:gv(row,COL.descrizione),
-    telefono:gv(row,COL.telefono), contatto:gv(row,COL.contatto),
+    cognome:gv(row,COL.cognome),email:gv(row,COL.email),
+    regione:gv(row,COL.regione),provincia:gv(row,COL.provincia),comune:gv(row,COL.comune),
+    percorso:gv(row,COL.percorso),studio:gv(row,COL.studio),
+    superficie:gv(row,COL.superficie),descrizione:gv(row,COL.descrizione),
+    telefono:gv(row,COL.telefono),contatto:gv(row,COL.contatto),
   })).filter(d=>d.nome);
 }
 
 async function loadData(data){
-  allData=data; filtered=[...allData];
+  allData=data;filtered=[...allData];
   populateFilters(allData);
   updateStats(allData);
   renderCards([]);
@@ -673,19 +610,19 @@ async function loadData(data){
   document.getElementById('loadingOverlay').classList.add('hidden');
 }
 
-// ── EVENT LISTENERS ────────────────────────────────────────────────────────────
+// ── EVENTS ────────────────────────────────────────────────────────────────────
 ['searchInput','searchInputM'].forEach(id=>document.getElementById(id).addEventListener('input',applyFilters));
 ['regioneFilter','regioneFilterM','percorsoFilter','percorsoFilterM'].forEach(id=>document.getElementById(id).addEventListener('change',applyFilters));
 document.querySelectorAll('[data-studio]').forEach(chip=>{
   chip.addEventListener('click',()=>{
     document.querySelectorAll('[data-studio]').forEach(c=>c.classList.remove('active'));
-    chip.classList.add('active'); studioFilter=chip.dataset.studio; applyFilters();
+    chip.classList.add('active');studioFilter=chip.dataset.studio;applyFilters();
   });
 });
 document.querySelectorAll('[data-studio-m]').forEach(chip=>{
   chip.addEventListener('click',()=>{
     document.querySelectorAll('[data-studio-m]').forEach(c=>c.classList.remove('active'));
-    chip.classList.add('active'); studioFilterM=chip.dataset.studioM; applyFilters();
+    chip.classList.add('active');studioFilterM=chip.dataset.studioM;applyFilters();
   });
 });
 document.getElementById('studioToggle').addEventListener('click',()=>{
@@ -695,7 +632,7 @@ document.getElementById('studioToggle').addEventListener('click',()=>{
 document.getElementById('mobileFilterBtn').addEventListener('click',()=>document.getElementById('mobilePanel').classList.toggle('open'));
 document.getElementById('mobilePanelClose').addEventListener('click',()=>document.getElementById('mobilePanel').classList.remove('open'));
 
-// ── INIT ───────────────────────────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────────────────────────
 initMap();
 loadFromSheet()
   .then(data=>loadData(data))
