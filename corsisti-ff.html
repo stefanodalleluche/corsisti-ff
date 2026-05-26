@@ -471,7 +471,8 @@ async function renderMap(data){
         lng+=SPREAD*Math.sin(angle);
       }
       const hasStudio=d.studio&&d.studio.toLowerCase()!=='no';
-      const m=L.marker([lat,lng],{icon:markerIcon(hasStudio), _personData:d});
+      const m=L.marker([lat,lng],{icon:markerIcon(hasStudio)});
+m._personData=d;
       m.bindPopup(buildPopup(d),{maxWidth:290});
       m.on('popupopen',()=>{window.__pd=d;});
       clusterGroup.addLayer(m);
@@ -517,8 +518,8 @@ function selectCard(idx){
     setTimeout(()=>{
       let found=null;
       clusterGroup.eachLayer(layer=>{
-        if(layer.options&&layer.options._personData){
-          const p=layer.options._personData;
+        if(layer._personData){
+  const p=layer._personData;
           if(p.nome===d.nome&&
              p.regione===d.regione&&
              p.provincia===d.provincia){
