@@ -447,8 +447,8 @@ async function geocode(comune,provincia,regione){
 }
 
 // ── RENDER MAPPA ──────────────────────────────────────────────────────────────
-// Raggio di distribuzione in gradi (~300m) per marker dello stesso comune
-const SPREAD=0.003;
+// Raggio di distribuzione in gradi (~800m) per marker dello stesso comune
+const SPREAD=0.009;
 async function renderMap(data){
   clusterGroup.clearLayers();
   // raggruppa per coordinate esatte
